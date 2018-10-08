@@ -91,6 +91,12 @@ def NaiveBayes(treino_dados, treino_labels,teste_dados):
     
     return gnb.predict(teste_dados) # Prediz os dados de X com base no modelo criado
 
+def cart(treino_dados, treino_labels,teste_dados):
+    cart = tree.DecisionTreeRegressor()
+    cart = cart.fit(treino_dados, treino_labels)
+    
+    return cart.predict(teste_dados)
+
 def main():
     np.set_printoptions(formatter={'float': lambda x: "{0:0.10f}".format(x)}) # Para imprimir em decimal
     X = np.loadtxt("cancer.data", delimiter=",") # pega o dataset
@@ -146,9 +152,7 @@ def main():
 
         mostra(y_pred, teste_labels, acuraciaNB, confusaoNB,i,vetor_variabilidade)
 
-        cart = tree.DecisionTreeRegressor()
-        cart = cart.fit(treino_dados, treino_labels)
-        y_pred = cart.predict(teste_dados)
+        y_pred = cart(treino_dados, treino_labels,teste_dados)
 
         acuraciaCART = np.sum(teste_labels.ravel() == y_pred)/teste_labels.ravel().shape[0] 
         confusaoCART = confusion_matrix(teste_labels.ravel(), y_pred)
