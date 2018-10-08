@@ -71,6 +71,23 @@ def particionar(arquivo, numeradaor, denominador, colunas):
 	
     return treino_dados, treino_labels, teste_dados, teste_labels
 
+def PegaDados():
+    X = np.loadtxt("cancer.data", delimiter=",") # pega o dataset
+    label_bruto = open("cancer-label.data", 'r')
+
+    label = np.zeros(569).reshape((569, 1))
+    c = 0
+    for l in label_bruto:
+        #print(l)
+        if(l == "M\n"):
+            #print("entrou M")
+            label[c][0] = 1
+        elif(l == "B\n"):
+            #print("entrou B")
+            label[c][0] = 0
+        c = c + 1
+    return X, label
+
 def SVMlinear(treino_dados, treino_labels,teste_dados):
     #SVM linear
     models = (svm.SVC(kernel='linear', C=1.0))
@@ -97,22 +114,20 @@ def cart(treino_dados, treino_labels,teste_dados):
     
     return cart.predict(teste_dados)
 
+#Para finalizar
+def classificadores(treino_dados, treino_labels,teste_dados):
+    vetor_variabilidade = variabilidade(explain, integrada.shape[1])
+    for i in range(0,3):
+        treino_dados, treino_labels, teste_dados, teste_labels = particionar(integrada,2,3,vetor_variabilidade[0][i])
+        
+
+
 def main():
     np.set_printoptions(formatter={'float': lambda x: "{0:0.10f}".format(x)}) # Para imprimir em decimal
-    X = np.loadtxt("cancer.data", delimiter=",") # pega o dataset
-    label_bruto = open("cancer-label.data", 'r')
+    
+    #pega o dataset
+    X, label = PegaDados()
 
-    label = np.zeros(569).reshape((569, 1))
-    c = 0
-    for l in label_bruto:
-        #print(l)
-        if(l == "M\n"):
-            #print("entrou M")
-            label[c][0] = 1
-        elif(l == "B\n"):
-            #print("entrou B")
-            label[c][0] = 0
-        c = c + 1
     integrada = np.concatenate((X,label), axis=1) #junta o X e o label
     integrada = normalization(integrada) #normalização
 
