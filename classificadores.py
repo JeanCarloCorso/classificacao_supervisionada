@@ -71,6 +71,26 @@ def particionar(arquivo, numeradaor, denominador, colunas):
 	
     return treino_dados, treino_labels, teste_dados, teste_labels
 
+def SVMlinear(treino_dados, treino_labels,teste_dados):
+    #SVM linear
+    models = (svm.SVC(kernel='linear', C=1.0))
+    models = (models.fit(treino_dados, treino_labels.ravel()))
+
+    #faz a predição
+    return models.predict(teste_dados)
+
+def rbf(treino_dados, treino_labels,teste_dados):
+    rbf = (svm.SVC(kernel='rbf', gamma=0.7, C=1.0))
+    rbf = (rbf.fit(treino_dados, treino_labels.ravel()))
+
+    return rbf.predict(teste_dados)
+
+def NaiveBayes(treino_dados, treino_labels,teste_dados):
+    gnb = GaussianNB() #Cria o modelo Naive Bayes
+    gnb.fit(treino_dados, treino_labels) # Treina o modelo com base nos dados de X
+    
+    return gnb.predict(teste_dados) # Prediz os dados de X com base no modelo criado
+
 def main():
     np.set_printoptions(formatter={'float': lambda x: "{0:0.10f}".format(x)}) # Para imprimir em decimal
     X = np.loadtxt("cancer.data", delimiter=",") # pega o dataset
@@ -96,15 +116,9 @@ def main():
     for i in range(0,3):
         treino_dados, treino_labels, teste_dados, teste_labels = particionar(integrada,2,3,vetor_variabilidade[0][i])
 
+        #faz svm linear
+        y_pred = SVMlinear(treino_dados, treino_labels,teste_dados)
 
-        C = 1.0  # SVM regularization parameter
-        #SVM linear
-        models = (svm.SVC(kernel='linear', C=C))
-        models = (models.fit(treino_dados, treino_labels.ravel()))
-
-        #compara a capacidade de previsão
-        y_pred = models.predict(teste_dados)
-        #print(y_pred)
         acuraciaSVMlinear = np.sum(teste_labels.ravel() == y_pred)/teste_labels.ravel().shape[0] 
         confusaoSVMlinear = confusion_matrix(teste_labels.ravel(), y_pred)
 
@@ -113,10 +127,8 @@ def main():
         mostra(y_pred, teste_labels, acuraciaSVMlinear, confusaoSVMlinear,i,vetor_variabilidade)
 
         #SVM não linear
-        rbf = (svm.SVC(kernel='rbf', gamma=0.7, C=C))
-        rbf = (rbf.fit(treino_dados, treino_labels.ravel()))
-
-        y_pred = rbf.predict(teste_dados)
+        y_pred = rbf(treino_dados, treino_labels,teste_dados)
+        
         acuraciaSVM_Nao_linear = np.sum(teste_labels.ravel() == y_pred)/teste_labels.ravel().shape[0] 
         confusaoSVM_Nao_linear = confusion_matrix(teste_labels.ravel(), y_pred)
         
@@ -124,10 +136,7 @@ def main():
 
         mostra(y_pred, teste_labels, acuraciaSVM_Nao_linear, confusaoSVM_Nao_linear,i,vetor_variabilidade)
 
-
-        gnb = GaussianNB() #Cria o modelo Naive Bayes
-        gnb.fit(treino_dados, treino_labels) # Treina o modelo com base nos dados de X
-        y_pred = gnb.predict(teste_dados) # Prediz os dados de X com base no modelo criado
+        y_pred = NaiveBayes(treino_dados, treino_labels,teste_dados)
 
         #Avalia quantos acertos e erros o modelo obteve
         acuraciaNB = np.sum(teste_labels.ravel() == y_pred)/teste_labels.ravel().shape[0] 
@@ -147,12 +156,5 @@ def main():
         print("\n-----------------------CART-----------------------\n")
 
         mostra(y_pred, teste_labels, acuraciaCART, confusaoCART,i,vetor_variabilidade)
-
-    print("|   Classificador   |   Variabilidade   |   Colunas   |   Acuracia   |   Matriz de confusão   |")
-    print("|   ")
-    print("")
-    print("")
-    print("")
-    print("")
 
 main()
