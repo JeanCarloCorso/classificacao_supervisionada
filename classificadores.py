@@ -37,18 +37,24 @@ def variabilidade(explain,colunas):
     return vetor_variabilidade
 
 
-def mostra(y_pred, teste_labels, acuracia, confusao, i, variabilidade):
-    if (i == 0):
-        print("============Variabilidade: ",variabilidade, "=======================")
-    elif(i == 1):
-        print("============Variabilidade: ",variabilidade, "=======================")
-    else:
-        print("============Variabilidade: ",variabilidade, "=======================")
-    print("--> Variabilidade: ", variabilidade[1][i])
-    #print("Tamanho do vetor de predição: ",y_pred.shape, "\nTamanho do vetor de labels teste:", teste_labels.shape)
-    #print("Vetor de acerto:\n",teste_labels.ravel() == y_pred) 
-    print("Acuracia: ",acuracia)
-    print("Matriz de confuzão:\n",confusao)
+def mostra(treino_dados, treino_labels,teste_dados, variabilidade, colunas):
+    print("============Variabilidade: ",variabildade, "=======================")
+    acuraciaSVMlinear, confusaoSVMlinear, acuraciaSVM_Nao_linear, confusaoSVM_Nao_linear, acuraciaNB, confusaoNB, acuraciaCART, confusaoCART = classificadores(treino_dados, treino_labels,teste_dados)
+    print("---SVM-LINEAR---")
+    print("Acuracia: ",acuraciaSVMlinear)
+    print("Matriz de confuzão:\n",confusaoSVMlinear)
+
+    print("---SVM-NÃO-LINEAR---")
+    print("Acuracia: ",acuraciaSVM_Nao_linear)
+    print("Matriz de confuzão:\n",confusaoSVM_Nao_linear)
+
+    print("---NAIVE-BAYES---")
+    print("Acuracia: ",acuraciaNB)
+    print("Matriz de confuzão:\n",confusaoNB)
+
+    print("---CART---")
+    print("Acuracia: ",acuraciaCART)
+    print("Matriz de confuzão:\n",confusaoCART)
 
 def normalization(X):
 	#normalizacao
