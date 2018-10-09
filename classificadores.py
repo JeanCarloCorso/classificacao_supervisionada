@@ -36,6 +36,12 @@ def variabilidade(explain,colunas):
             break
     return vetor_variabilidade
 
+def TPR_TNR(confusion_matrix):
+    tpr = confusion_matrix[0][0] / (confusion_matrix[0][0] + confusion_matrix[0][1])
+    tnr = confusion_matrix[1][1] / (confusion_matrix[1][0] + confusion_matrix[1][1])
+    print("TPR: ",tpr)
+    print("TNR: ", tnr,"\n")
+
 
 def mostra(treino_dados, treino_labels,teste_dados, variabilidade, colunas, teste_labels):
     print("============Variabilidade: ",variabilidade, "====Colunas: ", colunas+1,"===================")
@@ -43,18 +49,22 @@ def mostra(treino_dados, treino_labels,teste_dados, variabilidade, colunas, test
     print("---SVM-LINEAR---")
     print("Acuracia: ",acuraciaSVMlinear)
     print("Matriz de confuzão:\n",confusaoSVMlinear)
+    TPR_TNR(confusaoSVMlinear)
 
     print("---SVM-NÃO-LINEAR---")
     print("Acuracia: ",acuraciaSVM_Nao_linear)
     print("Matriz de confuzão:\n",confusaoSVM_Nao_linear)
+    TPR_TNR(confusaoSVM_Nao_linear)
 
     print("---NAIVE-BAYES---")
     print("Acuracia: ",acuraciaNB)
     print("Matriz de confuzão:\n",confusaoNB)
+    TPR_TNR(confusaoNB)
 
     print("---CART---")
     print("Acuracia: ",acuraciaCART)
     print("Matriz de confuzão:\n",confusaoCART)
+    TPR_TNR(confusaoCART)
 
 def normalization(X):
 	#normalizacao
