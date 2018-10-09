@@ -37,9 +37,9 @@ def variabilidade(explain,colunas):
     return vetor_variabilidade
 
 
-def mostra(treino_dados, treino_labels,teste_dados, variabilidade, colunas):
-    print("============Variabilidade: ",variabildade, "=======================")
-    acuraciaSVMlinear, confusaoSVMlinear, acuraciaSVM_Nao_linear, confusaoSVM_Nao_linear, acuraciaNB, confusaoNB, acuraciaCART, confusaoCART = classificadores(treino_dados, treino_labels,teste_dados)
+def mostra(treino_dados, treino_labels,teste_dados, variabilidade, colunas, teste_labels):
+    print("============Variabilidade: ",variabilidade, "====Colunas: ", colunas+1,"===================")
+    acuraciaSVMlinear, confusaoSVMlinear, acuraciaSVM_Nao_linear, confusaoSVM_Nao_linear, acuraciaNB, confusaoNB, acuraciaCART, confusaoCART = classificadores(treino_dados, treino_labels,teste_dados, teste_labels)
     print("---SVM-LINEAR---")
     print("Acuracia: ",acuraciaSVMlinear)
     print("Matriz de confuzão:\n",confusaoSVMlinear)
@@ -126,10 +126,7 @@ def cart(treino_dados, treino_labels,teste_dados):
     return cart.predict(teste_dados)
 
 #Para finalizar
-def classificadores(treino_dados, treino_labels,teste_dados):
-    vetor_variabilidade = variabilidade(explain, integrada.shape[1])
-    treino_dados, treino_labels, teste_dados, teste_labels = particionar(integrada,2,3,vetor_variabilidade[0][i])
-    
+def classificadores(treino_dados, treino_labels,teste_dados, teste_labels):
     #SVM Linear
     y_pred = SVMlinear(treino_dados, treino_labels,teste_dados)
 
@@ -172,44 +169,5 @@ def main():
 
     for i in range(0,3):
         treino_dados, treino_labels, teste_dados, teste_labels = particionar(integrada,2,3,vetor_variabilidade[0][i])
-
-        #faz svm linear
-        y_pred = SVMlinear(treino_dados, treino_labels,teste_dados)
-
-        acuraciaSVMlinear = np.sum(teste_labels.ravel() == y_pred)/teste_labels.ravel().shape[0] 
-        confusaoSVMlinear = confusion_matrix(teste_labels.ravel(), y_pred)
-
-        print("\n-----------------------SVM-LINEAR-----------------------\n")
-        
-        mostra(y_pred, teste_labels, acuraciaSVMlinear, confusaoSVMlinear,i,vetor_variabilidade)
-
-        #SVM não linear
-        y_pred = rbf(treino_dados, treino_labels,teste_dados)
-        
-        acuraciaSVM_Nao_linear = np.sum(teste_labels.ravel() == y_pred)/teste_labels.ravel().shape[0] 
-        confusaoSVM_Nao_linear = confusion_matrix(teste_labels.ravel(), y_pred)
-        
-        print("\n-----------------------SVM-NAO-LINEAR-----------------------\n")
-
-        mostra(y_pred, teste_labels, acuraciaSVM_Nao_linear, confusaoSVM_Nao_linear,i,vetor_variabilidade)
-
-        y_pred = NaiveBayes(treino_dados, treino_labels,teste_dados)
-
-        #Avalia quantos acertos e erros o modelo obteve
-        acuraciaNB = np.sum(teste_labels.ravel() == y_pred)/teste_labels.ravel().shape[0] 
-        confusaoNB = confusion_matrix(teste_labels.ravel(), y_pred)
-
-        print("\n-----------------------Naive-Bayes-----------------------\n")
-
-        mostra(y_pred, teste_labels, acuraciaNB, confusaoNB,i,vetor_variabilidade)
-
-        y_pred = cart(treino_dados, treino_labels,teste_dados)
-
-        acuraciaCART = np.sum(teste_labels.ravel() == y_pred)/teste_labels.ravel().shape[0] 
-        confusaoCART = confusion_matrix(teste_labels.ravel(), y_pred)
-
-        print("\n-----------------------CART-----------------------\n")
-
-        mostra(y_pred, teste_labels, acuraciaCART, confusaoCART,i,vetor_variabilidade)
-
+        mostra(treino_dados, treino_labels, teste_dados, vetor_variabilidade[1][i], vetor_variabilidade[0][i], teste_labels)
 main()
